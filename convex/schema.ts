@@ -37,5 +37,14 @@ export default defineSchema({
     content: v.string(), // This will store HTML content
   }).index("by_snippet_id", ["snippetId"]),
 
+  stars: defineTable({
+    userId: v.id("users"),
+    snippetId: v.id("snippets"),
+  })
+   .index("by_user_id", ["userId"])
+    .index("by_snippet_id", ["snippetId"])
+    .index("by_user_id_and_snippet_id", ["userId", "snippetId"]),
+
+
     
 })
