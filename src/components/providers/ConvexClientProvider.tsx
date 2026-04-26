@@ -1,4 +1,3 @@
-
 "use client";
 
 import { ClerkProvider, useAuth } from "@clerk/nextjs"
