@@ -2,7 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import { THEMES } from '../_constants';
 import { useCodeEditorStore } from '@/src/store/useCodeEditorStore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CircleOff, Palette } from 'lucide-react';
+import { CircleOff, Cloud, Laptop, Moon, Palette, Sun } from 'lucide-react';
+
+const THEME_ICONS: Record<string, React.ReactNode> = {
+  "vs-dark": <Moon className="size-4" />,
+  "vs-light": <Sun className="size-4" />,
+  // "github-dark": <Github className="size-4" />,
+  monokai: <Laptop className="size-4" />,
+  "solarized-dark": <Cloud className="size-4" />,
+};
 
 const ThemeSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
