@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { LANGUAGE_CONFIG } from '../_constants';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDownIcon, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 const LanguageSelector = ({ hasAccess }: { hasAccess: boolean }) => {
     const [isOpen, setIsOpen] = useState(false);
