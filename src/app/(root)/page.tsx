@@ -1,5 +1,8 @@
 import { SignInButton, SignOutButton, SignUpButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
+import Header from "./_components/Header";
+import EditorPanel from "./_components/EditorPanel";
+import OutputPanel from "./_components/OutputPanel";
 
 export default async function Home() {
   const { userId } = await auth();
