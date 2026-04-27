@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useRef, useState } from 'react'
 import { THEMES } from '../_constants';
 import { useCodeEditorStore } from '@/src/store/useCodeEditorStore';
@@ -14,7 +16,7 @@ const THEME_ICONS: Record<string, React.ReactNode> = {
 
 const ThemeSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
-  // const mounted = useMounted();
+  const[mounted, setMounted] = useState(false);
   const { theme, setTheme } = useCodeEditorStore();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const currentTheme = THEMES.find((t) => t.id === theme);
@@ -29,6 +31,12 @@ const ThemeSelector = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if(!mounted) return null;
 
 
   return (
