@@ -6,10 +6,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDownIcon, Sparkles } from 'lucide-react';
 import { Lock } from 'lucide-react';
 import Image from 'next/image';
+import useMounted from '@/src/hooks/useMounted';
 
 const LanguageSelector = ({ hasAccess }: { hasAccess: boolean }) => {
     const [isOpen, setIsOpen] = useState(false);
-  // const mounted = useMounted();
+  const mounted = useMounted();
 
   const { language, setLanguage } = useCodeEditorStore();
   const dropdownRef = useRef<HTMLDivElement>(null);
