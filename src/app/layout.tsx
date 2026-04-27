@@ -27,12 +27,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-gray-100 flex flex-col`}
     >
       <body className="min-h-full flex flex-col">
         <ConvexClientProvider>
           {children}
         </ConvexClientProvider>
+
+        <Footer></Footer>
       </body>
     </html>
   );
