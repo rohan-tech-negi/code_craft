@@ -1,9 +1,14 @@
 import { api } from '@/convex/_generated/api';
 import { currentUser } from '@clerk/nextjs/server';
 import { ConvexHttpClient } from 'convex/browser';
-import { Blocks, Code2 } from 'lucide-react';
+import { Blocks, Code2, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
+import { SignIn } from '@clerk/nextjs';
+import ThemeSelector from './ThemeSelector';
+import LanguageSelector from './LanguageSelector';
+import RunButton from './RunButton';
+import HeaderProfileBtn from './HeaderProfileBtn';
 
 async function Header() {
     const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
@@ -69,7 +74,7 @@ async function Header() {
           </nav>
         </div>
 
-        {/* <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
             <ThemeSelector />
             <LanguageSelector hasAccess={Boolean(convexUser?.isPro)} />
@@ -89,14 +94,14 @@ async function Header() {
             </Link>
           )}
 
-          <SignedIn>
+          <SignIn>
             <RunButton />
-          </SignedIn>
+          </SignIn>
 
           <div className="pl-3 border-l border-gray-800">
             <HeaderProfileBtn />
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   )
