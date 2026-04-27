@@ -4,7 +4,6 @@ import { ConvexHttpClient } from 'convex/browser';
 import { Blocks, Code2, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
-import { SignIn } from '@clerk/nextjs';
 import ThemeSelector from './ThemeSelector';
 import LanguageSelector from './LanguageSelector';
 import RunButton from './RunButton';
@@ -94,9 +93,8 @@ async function Header() {
             </Link>
           )}
 
-          <SignIn>
-            <RunButton />
-          </SignIn>
+          {/* Only show RunButton when user is logged in */}
+          {user && <RunButton />}
 
           <div className="pl-3 border-l border-gray-800">
             <HeaderProfileBtn />
