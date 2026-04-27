@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { THEMES } from '../_constants';
 import { useCodeEditorStore } from '@/src/store/useCodeEditorStore';
+import { AnimatePresence, motion } from 'framer-motion';
+import { CircleOff, Palette } from 'lucide-react';
 
 const ThemeSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
