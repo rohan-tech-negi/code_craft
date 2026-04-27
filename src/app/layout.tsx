@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import ConvexClientProvider from "../components/providers/ConvexClientProvider";
+import Footer from "../components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
