@@ -3,6 +3,7 @@ import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { Webhook } from "svix";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { api } from "./_generated/api";
 
 const http = httpRouter();
 
@@ -52,12 +53,12 @@ http.route({
       const name = `${first_name || ""} ${last_name || ""}`.trim();
 
       try {
-        // await ctx.runMutation(api.users.syncUser, {
-        //   userId: id,
-        //   email,
-        //   name,
-        // });
-        // save to database
+        await ctx.runMutation(api.users.syncUser, {
+          userId: id,
+          email,
+          name,
+        });
+       
       } catch (error) {
         return new Response("Error creating user", { status: 500 });
       }
