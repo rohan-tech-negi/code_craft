@@ -98,6 +98,44 @@ const EditorPanel = () => {
             </motion.button>
           </div>
         </div>
+
+        {/* Editor window */}
+        <div className="relative group rounded-xl overflow-hidden ring-1 ring-white/[0.05]">
+          {clerk.loaded && (
+            <Editor
+              height="600px"
+              language={LANGUAGE_CONFIG[language].monacoLanguage}
+              onChange={handleEditorChange}
+              theme={theme}
+              beforeMount={defineMonacoThemes}
+              onMount={(editor) => setEditor(editor)}
+              options={{
+                minimap: { enabled: false },
+                fontSize,
+                automaticLayout: true,
+                scrollBeyondLastLine: false,
+                padding: { top: 16, bottom: 16 },
+                renderWhitespace: "selection",
+                fontFamily: '"Fira Code", "Cascadia Code", Consolas, monospace',
+                fontLigatures: true,
+                cursorBlinking: "smooth",
+                smoothScrolling: true,
+                contextmenu: true,
+                renderLineHighlight: "all",
+                lineHeight: 1.6,
+                letterSpacing: 0.5,
+                roundedSelection: true,
+                scrollbar: {
+                  verticalScrollbarSize: 8,
+                  horizontalScrollbarSize: 8,
+                },
+              }}
+            />
+          )}
+
+          {!clerk.loaded && <EditorPanelSkeleton />}
+        </div>
+        
       </div>
 
     </div>
