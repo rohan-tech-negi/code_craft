@@ -4,10 +4,11 @@ import useMounted from '@/src/hooks/useMounted';
 import { useCodeEditorStore } from '@/src/store/useCodeEditorStore';
 import { useClerk } from '@clerk/nextjs';
 import React, { useEffect, useState } from 'react'
-import { LANGUAGE_CONFIG } from '../_constants';
+import { LANGUAGE_CONFIG, defineMonacoThemes } from '../_constants';
 import Image from 'next/image';
 import { RotateCcwIcon, ShareIcon, TypeIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Editor } from '@monaco-editor/react';
 
 const EditorPanel = () => {
     const clerk = useClerk();
@@ -133,7 +134,7 @@ const EditorPanel = () => {
             />
           )}
 
-          {!clerk.loaded && <EditorPanelSkeleton />}
+          
         </div>
         
       </div>
