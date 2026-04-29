@@ -23,6 +23,12 @@ const EditorPanel = () => {
     const savedFontSize = localStorage.getItem("editor-font-size");
     if (savedFontSize) setFontSize(parseInt(savedFontSize));
   }, [setFontSize]);
+
+    const handleRefresh = () => {
+    const defaultCode = LANGUAGE_CONFIG[language].defaultCode;
+    if (editor) editor.setValue(defaultCode);
+    localStorage.removeItem(`editor-code-${language}`);
+  };
   return (
     <div>EditorPanel</div>
   )
