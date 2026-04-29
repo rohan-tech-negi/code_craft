@@ -2,6 +2,7 @@
 import { useCodeEditorStore } from '@/src/store/useCodeEditorStore';
 import { AlertTriangle, CheckCircle, Clock, Copy, Terminal } from 'lucide-react';
 import React, { useState } from 'react'
+import RunningCodeSkeleton from './RunningCodeSkeleton';
 
 const OutputPanel = () => {
     const { output, error, isRunning } = useCodeEditorStore();
