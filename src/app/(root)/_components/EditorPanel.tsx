@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { RotateCcwIcon, ShareIcon, TypeIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Editor } from '@monaco-editor/react';
+import { EditorPanelSkeleton } from './EditorPanelSkeleton';
 
 const EditorPanel = () => {
     const clerk = useClerk();
@@ -133,6 +134,7 @@ const EditorPanel = () => {
               }}
             />
           )}
+          {!clerk.loaded && <EditorPanelSkeleton></EditorPanelSkeleton>}
 
           
         </div>
