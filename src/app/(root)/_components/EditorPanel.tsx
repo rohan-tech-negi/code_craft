@@ -44,6 +44,9 @@ const EditorPanel = () => {
     setFontSize(size);
     localStorage.setItem("editor-font-size", size.toString());
   };
+
+  if(!mounted) return <EditorPanelSkeleton />
+
   return (
     <div className="relative">
       <div className="relative bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/[0.05] p-6">
