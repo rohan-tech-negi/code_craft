@@ -1,5 +1,5 @@
 import { CodeEditorState } from "./../types/index";
-import { LANGUAGE_CONFIG } from "../app/(root)/_constants/index";
+import { LANGUAGE_CONFIG, GLOT_LANGUAGE_MAP } from "../app/(root)/_constants/index";
 import { create } from "zustand";
 import { Monaco } from "@monaco-editor/react";
 
@@ -83,76 +83,42 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       set({ isRunning: true, error: null, output: "" });
 
       try {
-        const judge0Id = LANGUAGE_CONFIG[language].judge0Id;
-        const apiKey = process.env.NEXT_PUBLIC_JUDGE0_API_KEY || "";
+        const glotLang = GLOT_LANGUAGE_MAP[language];
+        const apiToken = process.env.NEXT_PUBLIC_GLOT_API_TOKEN || "";
 
-        // Step 1: Submit the code
-        const submitRes = await fetch(
-          "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false&fields=*",
+        // Glot.io run API — single request, synchronous response
+        const response = await fetch(
+          `https://run.glot.io/languages/${glotLang.language}/versions/${glotLang.version}`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-              "x-rapidapi-key": apiKey,
+              Authorization: `Token ${apiToken}`,
             },
             body: JSON.stringify({
-              language_id: judge0Id,
-              source_code: code,
+              files: [{ name: glotLang.filename, content: code }],
             }),
           }
         );
 
-        const { token } = await submitRes.json();
-        if (!token) {
-          set({ error: "Failed to submit code. Check your Judge0 API key." });
-          return;
-        }
+        const data = await response.json();
+        console.log("data back from glot.io:", data);
 
-        // Step 2: Poll until execution is complete
-        let data: Record<string, unknown> = {};
-        for (let i = 0; i < 20; i++) {
-          await new Promise((r) => setTimeout(r, 1000));
-          const pollRes = await fetch(
-            `https://judge0-ce.p.rapidapi.com/submissions/${token}?base64_encoded=false&fields=*`,
-            {
-              headers: {
-                "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-                "x-rapidapi-key": apiKey,
-              },
-            }
-          );
-          data = await pollRes.json();
-          // status id 1 = In Queue, 2 = Processing
-          const statusId = (data.status as { id: number } | undefined)?.id ?? 0;
-          if (statusId !== 1 && statusId !== 2) break;
-        }
-
-        console.log("data back from judge0:", data);
-
-        // handle API-level errors (e.g. rate limit, bad key)
-        if (data.message) {
-          const errMsg = data.message as string;
+        // handle API-level errors (e.g. bad token)
+        if (!response.ok) {
+          const errMsg = data?.message || `API error: ${response.status}`;
           set({ error: errMsg, executionResult: { code, output: "", error: errMsg } });
           return;
         }
 
-        // handle compilation errors
-        const compileError = data.compile_output as string | null;
-        if (compileError) {
+        // handle compilation / runtime errors
+        const stderr = (data.stderr as string) || "";
+        const runtimeError = (data.error as string) || "";
+        if (stderr || runtimeError) {
+          const errMsg = stderr || runtimeError;
           set({
-            error: compileError,
-            executionResult: { code, output: "", error: compileError },
-          });
-          return;
-        }
-
-        // handle runtime errors
-        const stderr = data.stderr as string | null;
-        if (stderr) {
-          set({
-            error: stderr,
-            executionResult: { code, output: "", error: stderr },
+            error: errMsg,
+            executionResult: { code, output: "", error: errMsg },
           });
           return;
         }

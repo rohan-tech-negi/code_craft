@@ -8,24 +8,27 @@ type LanguageConfig = Record<
     label: string;
     logoPath: string;
     pistonRuntime: { language: string; version: string };
-    judge0Id: number; // Judge0 CE language ID
     monacoLanguage: string;
     defaultCode: string;
   }
 >;
 
-// Judge0 CE language IDs — https://ce.judge0.com/languages/
-export const JUDGE0_LANGUAGE_IDS: Record<string, number> = {
-  javascript: 93,  // Node.js 18.15.0
-  typescript: 94,  // TypeScript 5.0.3
-  python: 92,      // Python 3.11.2
-  java: 91,        // Java 17.0.6
-  go: 95,          // Go 1.18.5
-  rust: 73,        // Rust 1.65.0
-  cpp: 54,         // C++ (GCC 9.2.0)
-  csharp: 51,      // C# (Mono 6.6.0)
-  ruby: 72,        // Ruby 2.7.0
-  swift: 83,       // Swift 5.4.1
+// Glot.io language map — https://glot.io/new
+// Each entry: { language, version, filename }
+export const GLOT_LANGUAGE_MAP: Record<
+  string,
+  { language: string; version: string; filename: string }
+> = {
+  javascript: { language: "javascript", version: "latest", filename: "main.js" },
+  typescript: { language: "typescript", version: "latest", filename: "main.ts" },
+  python:     { language: "python",     version: "latest", filename: "main.py" },
+  java:       { language: "java",       version: "latest", filename: "Main.java" },
+  go:         { language: "go",         version: "latest", filename: "main.go" },
+  rust:       { language: "rust",       version: "latest", filename: "main.rs" },
+  cpp:        { language: "cpp",        version: "latest", filename: "main.cpp" },
+  csharp:     { language: "csharp",     version: "latest", filename: "main.cs" },
+  ruby:       { language: "ruby",       version: "latest", filename: "main.rb" },
+  swift:      { language: "swift",      version: "latest", filename: "main.swift" },
 };
 
 export const LANGUAGE_CONFIG: LanguageConfig = {
@@ -34,7 +37,6 @@ export const LANGUAGE_CONFIG: LanguageConfig = {
     label: "JavaScript",
     logoPath: "/javascript.png",
     pistonRuntime: { language: "javascript", version: "18.15.0" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.javascript,
     monacoLanguage: "javascript",
     defaultCode: `// JavaScript Playground
 const numbers = [1, 2, 3, 4, 5];
@@ -57,7 +59,7 @@ console.log('Sum of numbers:', sum);`,
     label: "TypeScript",
     logoPath: "/typescript.png",
     pistonRuntime: { language: "typescript", version: "5.0.3" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.typescript,
+
     monacoLanguage: "typescript",
     defaultCode: `// TypeScript Playground
 interface NumberArray {
@@ -95,7 +97,7 @@ console.log('Sum of numbers:', math.sum());`,
     label: "Python",
     logoPath: "/python.png",
     pistonRuntime: { language: "python", version: "3.10.0" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.python,
+
     monacoLanguage: "python",
     defaultCode: `# Python Playground
 numbers = [1, 2, 3, 4, 5]
@@ -118,7 +120,7 @@ print(f"Sum of numbers: {numbers_sum}")`,
     label: "Java",
     logoPath: "/java.png",
     pistonRuntime: { language: "java", version: "15.0.2" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.java,
+
     monacoLanguage: "java",
     defaultCode: `public class Main {
   public static void main(String[] args) {
@@ -161,7 +163,7 @@ print(f"Sum of numbers: {numbers_sum}")`,
     label: "Go",
     logoPath: "/go.png",
     pistonRuntime: { language: "go", version: "1.16.2" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.go,
+
     monacoLanguage: "go",
     defaultCode: `package main
 
@@ -203,7 +205,7 @@ func main() {
     label: "Rust",
     logoPath: "/rust.png",
     pistonRuntime: { language: "rust", version: "1.68.2" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.rust,
+
     monacoLanguage: "rust",
     defaultCode: `fn main() {
     // Create vector
@@ -237,7 +239,7 @@ func main() {
     label: "C++",
     logoPath: "/cpp.png",
     pistonRuntime: { language: "cpp", version: "10.2.0" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.cpp,
+
     monacoLanguage: "cpp",
     defaultCode: `#include <iostream>
 #include <vector>
@@ -282,7 +284,7 @@ int main() {
     label: "C#",
     logoPath: "/csharp.png",
     pistonRuntime: { language: "csharp", version: "6.12.0" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.csharp,
+
     monacoLanguage: "csharp",
     defaultCode: `using System;
 using System.Linq;
@@ -314,7 +316,7 @@ class Program {
     label: "Ruby",
     logoPath: "/ruby.png",
     pistonRuntime: { language: "ruby", version: "3.0.1" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.ruby,
+
     monacoLanguage: "ruby",
     defaultCode: `# Create array
 numbers = [1, 2, 3, 4, 5]
@@ -339,7 +341,7 @@ puts "Sum of numbers: #{sum}"`,
     label: "Swift",
     logoPath: "/swift.png",
     pistonRuntime: { language: "swift", version: "5.3.3" },
-    judge0Id: JUDGE0_LANGUAGE_IDS.swift,
+
     monacoLanguage: "swift",
     defaultCode: `// Create array
 let numbers = [1, 2, 3, 4, 5]
