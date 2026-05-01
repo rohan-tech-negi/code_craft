@@ -84,29 +84,25 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
 
       try {
         const glotLang = GLOT_LANGUAGE_MAP[language];
-        const apiToken = process.env.NEXT_PUBLIC_GLOT_API_TOKEN || "";
 
-        // Glot.io run API — single request, synchronous response
-        const response = await fetch(
-          `https://run.glot.io/languages/${glotLang.language}/versions/${glotLang.version}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Token ${apiToken}`,
-            },
-            body: JSON.stringify({
-              files: [{ name: glotLang.filename, content: code }],
-            }),
-          }
-        );
+        // Call our own server-side proxy to avoid CORS & keep token secret
+        const response = await fetch("/api/execute", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            language: glotLang.language,
+            version: glotLang.version,
+            filename: glotLang.filename,
+            code,
+          }),
+        });
 
         const data = await response.json();
         console.log("data back from glot.io:", data);
 
-        // handle API-level errors (e.g. bad token)
+        // handle proxy / API-level errors
         if (!response.ok) {
-          const errMsg = data?.message || `API error: ${response.status}`;
+          const errMsg = data?.error || `API error: ${response.status}`;
           set({ error: errMsg, executionResult: { code, output: "", error: errMsg } });
           return;
         }
