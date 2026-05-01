@@ -9,10 +9,22 @@ import React from 'react'
 
 const RunButton = () => {
   const { user } = useUser();
-  const { runCode, language, isRunning } = useCodeEditorStore();
+  const { runCode, language, isRunning, ExecutionResult } = useCodeEditorStore();
   // const saveExecution = useMutation(api.codeExecutions.saveExecution);
 
-  const handleRun = async () => { }
+  const handleRun = async () => { 
+     await runCode();
+    // const result = getExecutionResult();
+
+    if (user && ExecutionResult) {
+      // await saveExecution({
+      //   language,
+      //   code: result.code,
+      //   output: result.output || undefined,
+      //   error: result.error || undefined,
+      // });
+    }
+  }
 
 
   return (

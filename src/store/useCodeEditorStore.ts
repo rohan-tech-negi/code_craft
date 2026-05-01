@@ -83,67 +83,86 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       set({ isRunning: true, error: null, output: "" });
 
       try {
-        const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
-        const response = await fetch("https://emkc.org/api/v2/piston/execute", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            language: runtime.language,
-            version: runtime.version,
-            files: [{ content: code }],
-          }),
-        });
+        const judge0Id = LANGUAGE_CONFIG[language].judge0Id;
+        const apiKey = process.env.NEXT_PUBLIC_JUDGE0_API_KEY || "";
 
-        const data = await response.json();
+        // Step 1: Submit the code
+        const submitRes = await fetch(
+          "https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false&fields=*",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+              "x-rapidapi-key": apiKey,
+            },
+            body: JSON.stringify({
+              language_id: judge0Id,
+              source_code: code,
+            }),
+          }
+        );
 
-        console.log("data back from piston:", data);
+        const { token } = await submitRes.json();
+        if (!token) {
+          set({ error: "Failed to submit code. Check your Judge0 API key." });
+          return;
+        }
 
-        // handle API-level erros
+        // Step 2: Poll until execution is complete
+        let data: Record<string, unknown> = {};
+        for (let i = 0; i < 20; i++) {
+          await new Promise((r) => setTimeout(r, 1000));
+          const pollRes = await fetch(
+            `https://judge0-ce.p.rapidapi.com/submissions/${token}?base64_encoded=false&fields=*`,
+            {
+              headers: {
+                "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+                "x-rapidapi-key": apiKey,
+              },
+            }
+          );
+          data = await pollRes.json();
+          // status id 1 = In Queue, 2 = Processing
+          const statusId = (data.status as { id: number } | undefined)?.id ?? 0;
+          if (statusId !== 1 && statusId !== 2) break;
+        }
+
+        console.log("data back from judge0:", data);
+
+        // handle API-level errors (e.g. rate limit, bad key)
         if (data.message) {
-          set({ error: data.message, executionResult: { code, output: "", error: data.message } });
+          const errMsg = data.message as string;
+          set({ error: errMsg, executionResult: { code, output: "", error: errMsg } });
           return;
         }
 
         // handle compilation errors
-        if (data.compile && data.compile.code !== 0) {
-          const error = data.compile.stderr || data.compile.output;
+        const compileError = data.compile_output as string | null;
+        if (compileError) {
           set({
-            error,
-            executionResult: {
-              code,
-              output: "",
-              error,
-            },
+            error: compileError,
+            executionResult: { code, output: "", error: compileError },
           });
           return;
         }
 
-        if (data.run && data.run.code !== 0) {
-          const error = data.run.stderr || data.run.output;
+        // handle runtime errors
+        const stderr = data.stderr as string | null;
+        if (stderr) {
           set({
-            error,
-            executionResult: {
-              code,
-              output: "",
-              error,
-            },
+            error: stderr,
+            executionResult: { code, output: "", error: stderr },
           });
           return;
         }
 
-        // if we get here, execution was successful
-        const output = data.run.output;
-
+        // successful execution
+        const output = (data.stdout as string) || "";
         set({
           output: output.trim(),
           error: null,
-          executionResult: {
-            code,
-            output: output.trim(),
-            error: null,
-          },
+          executionResult: { code, output: output.trim(), error: null },
         });
       } catch (error) {
         console.log("Error running code:", error);
